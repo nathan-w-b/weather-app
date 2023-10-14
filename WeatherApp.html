@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <link rel="stylesheet" href="styles/WeatherAppStyles.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <script src="scripts/WeatherHandler.js"></script>
+    <script src="scripts/SearchBox.js"></script>
+    <script src="scripts/WeatherApp.js"></script>
+    <script src="scripts/LocationData.js"></script>
+    <title>Simple Weather App</title>
+    <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+</head>
+<body>
+<div class="page-content">
+    <div class="site-header">
+        <div class="site-header-logo">
+            <!--suppress HtmlUnknownTarget -->
+            <img src="assets\logo.png" class="site-logo"
+                 alt="">
+            <span id="txtSiteName">Simple Weather App</span>
+        </div>
+        <div class="site-header-search">
+            <input type="text" id="inputLocation" class = "city-input"
+                   placeholder="Search City or Zip Code">
+            <div  id="locationSearchListbox" class="search-results"> </div>
+        </div>
+        <button type="button" id="btnDegree" class="degree-button"
+                onclick="switchTempUnit()">°F</button>
+    </div>
+    <div class="site-content">
+        <div id="divLocationHeader" class="location-header">
+            <div class="location-header-left">
+                <!--suppress HtmlUnknownTarget -->
+                <img id="imgErrorWarning" src="assets\warning.png"
+                     width="27px" height="27px" style="display: none"
+                     alt="Warning"
+                     title="Information Missing from Location:">
+                <div id="txtLocationName" class="location-name">
+                    Location
+                </div>
+            </div>
+            <div class="location-header-right">
+                <button type="button" id="btnRefresh" class="refresh-button refresh-button-effects"
+                onclick="forceLocationRefresh()">
+                    <!--suppress HtmlUnknownTarget -->
+                    <img src="assets\refresh.png"
+                         width="27px" height="27px"
+                         alt="Refresh">
+                </button>
+            </div>
+        </div>
+
+        <div id="divCurrentWeather" class="current-weather">
+            <div id="txtCurrentWeatherHeader" class="current-weather-header">
+            </div>
+            <div id="divCurrentWeatherBody" class="current-weather-body">
+                <div id="divCurrentWeatherWrapper" class="current-weather-wrapper">
+                    <div id="divCurrentWeatherLeft" class="current-weather-left">
+                        <div id="current-weather-condition" class="current-weather-condition">
+                            <img id="imgCurrentWeather"
+                                 src=""
+                                 width = "96px" height="96px"
+                                 alt="">
+
+                        </div>
+                        <div id="divCurrentWeatherTempAndCondition" class="current-weather-temp">
+                            <div id="txtCurrentWeatherTemp" class="current-weather-degree">
+                                °F
+                            </div>
+                            <span id="txtCurrentWeatherCondition"></span>
+                        </div>
+                    </div>
+
+                    <div id="divCurrentWeatherRight" class="current-weather-right">
+                        <div id="txtCurrentWeatherData" class="current-weather-data">
+                            <span>High:</span>
+                            <span>Low:</span>
+                            <span>Prec:</span>
+                        </div>
+                    </div>
+                </div>
+                <div id="divUserInformationDisplay" class="current-weather-alternate">
+                    <div id="txtUserInformation" class="current-weather-user-information">
+                        Loading...
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="divForecastWeather" class="forecast-weather"></div>
+        <div id="divHourlyWeather" class="forecast-weather-hourly"></div>
+    </div>
+    <div class="site-footer">
+        <a href="https://www.weatherapi.com/" title="Free Weather API">
+            <img src='https://cdn.weatherapi.com/v4/images/weatherapi_logo.png'
+                 alt="Weather data by WeatherAPI.com">
+        </a>
+    </div>
+</div>
+
+<script>
+    // initialize global vars
+    const forecastCount = 2;
+    const testing = false;
+    let temperatureUnit = "f";
+    let currentLocation = new LocationData();
+    let currentData = null;
+    let weather = new WeatherHandler(forecastCount, testing);
+    let searchBox = new LocationSearchBox(
+        document.getElementById("inputLocation"),
+        document.getElementById("locationSearchListbox"),
+        searchForLocations,
+        refreshLocation
+    );
+    let btnRefresh = document.getElementById("btnRefresh");
+
+    // add event listener to window for resizing
+    window.addEventListener('resize', onWindowResize);
+
+    // initialize refresh location button
+    enableRefreshButton(false);
+
+    // init page
+    displayLoading();
+    refreshLocation(currentLocation);
+    onWindowResize();
+
+
+</script>
+</body>
+</html>
